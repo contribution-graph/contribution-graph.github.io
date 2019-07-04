@@ -1,0 +1,32 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Hacking GitHub's Contribution Graph</title>
+  </head>
+  <body>
+    <h1>Hacking GitHub's Contribution Graph</h1>
+    <p>Everybody in the world knew when I was on vacation. They also knew my company's holiday schedule and when I worked on weekends. Or they could have had they wanted to. All because of the contribution graph on my public GitHub profile. So I decided to hack the GitHub contribution graph.</p>
+    <p>
+      <a href="https://user-images.githubusercontent.com/52541713/60677776-70e2e100-9e50-11e9-9211-0dcda66c38ac.png">
+        <img src="https://user-images.githubusercontent.com/52541713/60677776-70e2e100-9e50-11e9-9211-0dcda66c38ac.png">
+      </a>
+    </p>
+    <p>I know that any slightly motivated person in the world can still fairly easily determine whether I am on vacation on any given day. However, GitHub's exposure of this personal information struck me as unnecessary so I emailed them last November to ask how I could hide the contribution graph. Their response indicated that it was not possible so I set out to obscure that information on the graph.</p>
+    <p>
+      <a href="https://user-images.githubusercontent.com/52541713/60677797-835d1a80-9e50-11e9-818d-34fc0029f5f1.png">
+        <img src="https://user-images.githubusercontent.com/52541713/60677797-835d1a80-9e50-11e9-818d-34fc0029f5f1.png">
+      </a>
+    </p>
+    <p>The majority of the code I write for my job is committed to a public repository, and all my activity in that repository is included in my contribution graph. Since my work requires me to, you know, do my job, stopping all activity in that public repository was not an option. However, by including additional activity automatically regardless of my real activity I could make it harder to determine my true behavioral patterns.</p>
+    <p>
+      <a href="https://user-images.githubusercontent.com/52541713/60677818-92dc6380-9e50-11e9-9e9f-b59aeda917de.png">
+        <img src="https://user-images.githubusercontent.com/52541713/60677818-92dc6380-9e50-11e9-9e9f-b59aeda917de.png">
+      </a>
+    </p>
+    <p>I started a new private repository (contribution-mask) to send dummy activity to, made sure activity in private repos were included in my contribution graph, and <a href="https://github.com/settings/tokens/new">created an API token</a> to use with the automated activity generator. After some research into what activity is included in the contribution graph (GitHub has some <a href="https://help.github.com/articles/why-are-my-contributions-not-showing-up-on-my-profile">good documentation on this</a>) and some experimentation around what activity is easiest to automatically generate, I decided to that <a href="https://developer.github.com/v3/issues/#create-an-issue">creating issues</a> would be easiest.</p>
+    <p>
+      <pre>0 12 * * * for i in `seq $(rand --max 12)`; do curl --request POST --header "Authorization: token a4c5983267fd4f02a184582163a2af36ff5c4a72" --data "{\"title\": \"Obscuring issue $i\"}" https://api.github.com/repos/myusername/contribution-mask/issues; done</pre>
+    </p>
+    <p>I installed the bash one-liner above as a cronjob on a server I run and have been happily obscuring the activities on my contribution graph for the last few weeks. There are a handful of improvements that can be made to the solution I've arrived at, but I'm hoping that this entire approach will be rendered obsolete when GitHub adds an option to hide contribution graphs from public profiles.</p>
+  <body>
+</html>
